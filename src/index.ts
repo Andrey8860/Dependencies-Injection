@@ -1,13 +1,17 @@
 import { createIoCContainer } from './ioc/index';
-import { Users } from './services/users';
-import { Logger } from './services/logger';
+import config from '../config.json';
 
 import type { User, ApiConfig } from './types';
 
 const ioc = createIoCContainer();
-const usersService = ioc.resolve('users');
 const logger = ioc.resolve('logger');
-const http = ioc.resolve('http');
+
+const apiConfigInstance: ApiConfig = {
+    path: config.common.api.path,
+    resources: config.common.api.resources
+};
+
+ioc.register('apiConfig', apiConfigInstance);
 
 const renderUsers = async (config: ApiConfig) => {
   const usersService = ioc.resolve('users');
@@ -31,8 +35,6 @@ const app = () => {
 };
 
 window.onload = (event: Event) => {
-  const logger = new Logger();
-
   logger.info('Page is loaded.');
 
   app();
